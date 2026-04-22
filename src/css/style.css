@@ -1,8 +1,32 @@
-@import 'tailwindcss';
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import 'tailwindcss';
 
 @theme {
   --font-outfit: "Outfit", sans-serif;
   --font-jakarta: "Plus Jakarta Sans", sans-serif;
+
+  --animate-slide-left: slide-left 0.8s ease-out forwards;
+  --animate-slide-right: slide-right 0.8s ease-out forwards;
+
+  @keyframes slide-left {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-right {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 }

@@ -13,7 +13,7 @@ export default function HomePage(): React.JSX.Element {
     };
 
     return (
-        <div className="h-[calc(100vh-76px)] overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-[#FFFBE9]">
+        <div className="h-[100vh] overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-[#FFFBE9]">
             {/* Screen 1 */}
             <section className="relative h-full w-full snap-start flex items-center justify-center min-h-[calc(100vh-76px)]">
                 <div 
@@ -50,7 +50,7 @@ export default function HomePage(): React.JSX.Element {
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#FFFBE9] drop-shadow-xl font-outfit">
                             Aplikasi belajar terbaik
                         </h1>
-                        <p className="text-[#E3CAA5] text-base md:text-lg lg:text-xl leading-relaxed font-jakarta">
+                        <p className="text-white text-base md:text-lg lg:text-xl leading-relaxed font-jakarta">
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
                         </p>
                     </div>
