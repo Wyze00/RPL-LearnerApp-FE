@@ -2,11 +2,11 @@ import { Navigate, Outlet } from 'react-router';
 import { useAppSelector } from '../hooks/useAppSelector';
 
 export default function PublicRoute(): React.JSX.Element {
-    const template  = useAppSelector((state) => state.template);
+    const user  = useAppSelector((state) => state.user);
 
-    if (!template) {
+    if (user.username) {
         return (
-            <Navigate to={`/`}/>
+            <Navigate to={`/learner`}/>
         );
     }
 
