@@ -15,7 +15,7 @@ export default function CourseCard({ course }: CourseCardProps): React.JSX.Eleme
 
     return (
         <Link 
-            to={`/courses/${course.id}`}
+            to={`/course/${course.id}`}
             className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#E3CAA5]/30 hover:-translate-y-2"
         >
             {/* Thumbnail */}
