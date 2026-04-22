@@ -3,7 +3,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import type { MeResponse } from "../types/auth.type";
 import { userSlice } from "../redux/user.slice";
 import { useAppSelector } from "../hooks/useAppSelector";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation, Link } from "react-router";
 
 export default function Header({ children }: PropsWithChildren): React.JSX.Element {
     const dispatch = useAppDispatch();
@@ -87,6 +87,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
 
     const handleLogout = () => {
         dispatch(userSlice.actions.resetState());
+        navigate('/login');
     }
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -106,9 +107,9 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                 }`}
             >
                 {/* Logo */}
-                <div className="font-extrabold text-xl tracking-wider text-[#AD8B73] font-outfit">
+                <Link to="/" className="font-extrabold text-xl tracking-wider text-[#AD8B73] font-outfit">
                     ELEARNING
-                </div>
+                </Link>
 
                 {/* Search Box */}
                 <div className="flex-1 mx-12 max-w-xl">
@@ -144,7 +145,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                                 href="/login"
                                 className="inline-block px-6 py-2 border-2 border-[#AD8B73] rounded hover:bg-[#AD8B73] hover:text-[#FFFBE9] transition-colors font-semibold text-[#AD8B73] font-jakarta"
                             >
-                                Sign Up
+                                Login
                             </a>
                         )}
                     </div>

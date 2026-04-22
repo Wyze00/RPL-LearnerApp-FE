@@ -6,7 +6,7 @@ export default function PublicRoute(): React.JSX.Element {
 
     if (user.username) {
         return (
-            <Navigate to={`/dashboard`}/>
+            <Navigate to={`/learner`}/>
         );
     }
 

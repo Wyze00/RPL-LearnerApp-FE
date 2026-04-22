@@ -8,6 +8,7 @@ import Header from "./components/Header";
 const HomePage = lazy(() => import('./pages/HomePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const LoginPage = lazy(() => import('./pages/public/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/public/RegisterPage'));
 
 export default function App(): React.JSX.Element {
     return (
@@ -18,6 +19,7 @@ export default function App(): React.JSX.Element {
               <Route element={<PublicRoute />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
               </Route>
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
