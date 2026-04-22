@@ -5,7 +5,7 @@ export default function NotFoundPage(): React.JSX.Element {
         <div className="flex flex-col items-center justify-center min-h-[80vh] bg-[#FFFBE9] text-[#AD8B73] px-6 text-center">
             {/* The 404 Header */}
             <div className="relative">
-                <h1 className="text-9xl font-extrabold tracking-widest text-[#E3CAA5] drop-shadow-md">
+                <h1 className="text-9xl font-extrabold tracking-widest text-[#E3CAA5] drop-shadow-md font-outfit">
                     404
                 </h1>
                 
@@ -15,11 +15,11 @@ export default function NotFoundPage(): React.JSX.Element {
             </div>
 
             {/* Description */}
-            <h2 className="mt-8 text-3xl font-bold">
+            <h2 className="mt-8 text-3xl font-bold font-outfit">
                 Oops! Looks like you're lost.
             </h2>
             
-            <p className="mt-4 max-w-md text-lg text-[#AD8B73]/80">
+            <p className="mt-4 max-w-md text-lg text-[#AD8B73]/80 font-jakarta">
                 The class or page you're looking for doesn't exist anymore or might have been moved. Let's get you back to learning.
             </p>
 
