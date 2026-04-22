@@ -14,3 +14,12 @@ export interface RegisterRequest {
     email: string;
     name: string;
 }
+
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ForgotPasswordVerifyRequest {
+    token: string;
+    password: string;
+}

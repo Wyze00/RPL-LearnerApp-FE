@@ -124,6 +124,10 @@ export default function LoginPage(): React.JSX.Element {
                     <div className="text-center mt-4 text-[#1E293B] text-sm font-medium">
                         Belum punya akun? <Link to="/register" className="font-bold text-[#AD8B73] underline hover:text-[#1E293B] transition-colors">Daftar sekarang</Link>
                     </div>
+
+                    <div className="text-center mt-4 text-[#1E293B] text-sm font-medium">
+                        Lupa password? <Link to="/forgot-password" className="font-bold text-[#AD8B73] underline hover:text-[#1E293B] transition-colors">Reset password</Link>
+                    </div>
                 </form>
             </div>
 
