@@ -11,6 +11,7 @@ const LoginPage = lazy(() => import('./pages/public/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/public/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/public/ForgotPassword'));
 const ForgotPasswordVerifyPage = lazy(() => import('./pages/public/ForgotPasswordVerify'));
+const CoursePage = lazy(() => import('./pages/courses/CoursePage'));
 
 export default function App(): React.JSX.Element {
     return (
@@ -23,6 +24,7 @@ export default function App(): React.JSX.Element {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/forgot-password/verify" element={<ForgotPasswordVerifyPage />} />
+                <Route path="/course" element={<CoursePage />} />
               </Route>
               <Route path="/" element={<HomePage />} />
               <Route path="*" element={<NotFoundPage />} />

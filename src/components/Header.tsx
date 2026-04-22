@@ -92,7 +92,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && search.trim() !== "") {
-            navigate(`/courses?search=${encodeURIComponent(search.trim())}`);
+            navigate(`/course?search=${encodeURIComponent(search.trim())}`);
         }
     }
 
