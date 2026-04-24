@@ -218,7 +218,7 @@ export default function CoursePage(): React.JSX.Element {
             </div>
 
             {/* Pagination */}
-            {courses.length > 0 && (
+            {courses.length > -1 && (
                 <div className="max-w-7xl mx-auto mt-20 flex items-center justify-center gap-2 font-jakarta">
                     <button 
                         onClick={() => handlePageChange(page - 1)}

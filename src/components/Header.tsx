@@ -127,10 +127,9 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                 {/* Main Nav and Auth */}
                 <div className="flex items-center gap-8">
                     <nav className="flex items-center gap-6 font-medium text-[#AD8B73] font-jakarta">
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 1</a>
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 2</a>
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 3</a>
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 4</a>
+                        <Link to="/course" className="hover:text-[#CEAB93] transition-colors">Course</Link>
+                        <Link to="/learner/enrollment" className="hover:text-[#CEAB93] transition-colors">Enrollment</Link>
+                        <Link to="/instructor" className="hover:text-[#CEAB93] transition-colors">Instructor</Link>
                     </nav>
 
                     <div className="ml-4">

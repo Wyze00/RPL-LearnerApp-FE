@@ -16,3 +16,17 @@ export interface CourseIncludeVideo extends Course {
 export interface EnrollCourse {
     paymentMethod: string;
 }
+
+export interface CourseIncludeCount extends Course {
+    count: number;
+}
+
+export interface CoursePaymentHistory {
+    id              : string;
+    course_id       : string;
+    learner_id      : string;
+    createdAt       : string;
+    payment_method  : string;
+    amount          : number;
+    status          : string;
+}

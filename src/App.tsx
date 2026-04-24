@@ -17,6 +17,9 @@ const CourseDetailPage = lazy(() => import('./pages/courses/CourseDetailPage'));
 const EnrollmentPage = lazy(() => import('./pages/enrollments/EnrollmentPage'));
 const EnrollmentDetailPage = lazy(() => import('./pages/enrollments/EnrollmentDetailPage'));
 const EnrollmentVideoPage = lazy(() => import('./pages/enrollments/EnrollmentVideoPage'));
+const InstructorPage = lazy(() => import('./pages/instructors/InstructorPage'));
+const InstructorCoursePage = lazy(() => import('./pages/instructors/InstructorCoursePage'));
+const InstructorCourseVideoPage = lazy(() => import('./pages/instructors/InstructorCourseVideoPage'));
 
 export default function App(): React.JSX.Element {
     return (
@@ -34,6 +37,9 @@ export default function App(): React.JSX.Element {
                 <Route path="/learner/enrollment" element={<EnrollmentPage />} />
                 <Route path="/learner/enrollment/:enrollmentId" element={<EnrollmentDetailPage />} />
                 <Route path="/learner/enrollment/:enrollmentId/video/:videoId" element={<EnrollmentVideoPage />} />
+                <Route path="/instructor" element={<InstructorPage />} />
+                <Route path="/instructor/course/:courseId" element={<InstructorCoursePage />} />
+                <Route path="/instructor/course/:courseId/video/:videoId" element={<InstructorCourseVideoPage />} />
               </Route>
               <Route path="/course" element={<CoursePage />} />
               <Route path="/course/:id" element={<CourseDetailPage />} />
