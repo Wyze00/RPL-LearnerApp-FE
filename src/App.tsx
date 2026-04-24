@@ -5,6 +5,7 @@ import PublicRoute from "./middlewares/pubic.middleware";
 import { store } from "./redux/store";
 import Header from "./components/Header";
 import LoginMidleware from "./middlewares/login.middleware";
+import AdminMiddleware from "./middlewares/admin.middleware";
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -20,6 +21,7 @@ const EnrollmentVideoPage = lazy(() => import('./pages/enrollments/EnrollmentVid
 const InstructorPage = lazy(() => import('./pages/instructors/InstructorPage'));
 const InstructorCoursePage = lazy(() => import('./pages/instructors/InstructorCoursePage'));
 const InstructorCourseVideoPage = lazy(() => import('./pages/instructors/InstructorCourseVideoPage'));
+const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
 
 export default function App(): React.JSX.Element {
     return (
@@ -40,6 +42,9 @@ export default function App(): React.JSX.Element {
                 <Route path="/instructor" element={<InstructorPage />} />
                 <Route path="/instructor/course/:courseId" element={<InstructorCoursePage />} />
                 <Route path="/instructor/course/:courseId/video/:videoId" element={<InstructorCourseVideoPage />} />
+              </Route>
+              <Route element={<AdminMiddleware />}>
+                <Route path="/admin" element={<AdminPage />} />
               </Route>
               <Route path="/course" element={<CoursePage />} />
               <Route path="/course/:id" element={<CourseDetailPage />} />
