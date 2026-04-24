@@ -4,6 +4,7 @@ import type { MeResponse } from "../types/auth.type";
 import { userSlice } from "../redux/user.slice";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { useNavigate, useLocation, Link } from "react-router";
+import type { ResponseWithData } from "../types/response.type";
 
 export default function Header({ children }: PropsWithChildren): React.JSX.Element {
     const dispatch = useAppDispatch();
@@ -75,7 +76,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                 const response = await fetch('/api/auth/me');
 
                 if (response.ok) {
-                    const data = await response.json() as MeResponse;
+                    const { data } = await response.json() as ResponseWithData<MeResponse>;
                     dispatch(userSlice.actions.setState(data));
                 }
 

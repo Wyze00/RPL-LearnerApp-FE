@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import PublicRoute from "./middlewares/pubic.middleware";
 import { store } from "./redux/store";
 import Header from "./components/Header";
+import LoginMidleware from "./middlewares/login.middleware";
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -13,6 +14,9 @@ const ForgotPasswordPage = lazy(() => import('./pages/public/ForgotPassword'));
 const ForgotPasswordVerifyPage = lazy(() => import('./pages/public/ForgotPasswordVerify'));
 const CoursePage = lazy(() => import('./pages/courses/CoursePage'));
 const CourseDetailPage = lazy(() => import('./pages/courses/CourseDetailPage'));
+const EnrollmentPage = lazy(() => import('./pages/enrollments/EnrollmentPage'));
+const EnrollmentDetailPage = lazy(() => import('./pages/enrollments/EnrollmentDetailPage'));
+const EnrollmentVideoPage = lazy(() => import('./pages/enrollments/EnrollmentVideoPage'));
 
 export default function App(): React.JSX.Element {
     return (
@@ -25,9 +29,14 @@ export default function App(): React.JSX.Element {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/forgot-password/verify" element={<ForgotPasswordVerifyPage />} />
-                <Route path="/course" element={<CoursePage />} />
-                <Route path="/course/:id" element={<CourseDetailPage />} />
               </Route>
+              <Route element={<LoginMidleware />}>
+                <Route path="/learner/enrollment" element={<EnrollmentPage />} />
+                <Route path="/learner/enrollment/:enrollmentId" element={<EnrollmentDetailPage />} />
+                <Route path="/learner/enrollment/:enrollmentId/video/:videoId" element={<EnrollmentVideoPage />} />
+              </Route>
+              <Route path="/course" element={<CoursePage />} />
+              <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route path="/" element={<HomePage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

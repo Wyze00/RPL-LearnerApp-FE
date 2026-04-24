@@ -1,64 +1,28 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { CourseIncludeVideo } from "../../types/course.type";
 import type { ResponseWithData, ResponseWithError } from "../../types/response.type";
 import { useParams, Link } from "react-router";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import ErrorBanner from "../../components/ErrorBanner";
+import { getYoutubeEmbedUrl } from "../../utils/getYoutubeEmbedUrl";
 
-// Mock data as fallback
-const mockCourse: CourseIncludeVideo = {
-    id: "1",
-    title: "Langkah Menjadi Senior Web Developer dalam 30 Hari",
-    description: `
-        <p className="mb-4">Apakah Anda ingin meningkatkan karir Anda dari Junior ke Senior Developer? Kursus ini dirancang khusus untuk memberikan Anda pemahaman mendalam tentang arsitektur perangkat lunak, optimasi performa, dan kepemimpinan teknis.</p>
-        <p className="mb-4">Anda akan belajar bagaimana membangun aplikasi skala besar menggunakan teknologi modern, mengelola tim engineering, dan membuat keputusan arsitektural yang tepat.</p>
-        <ul className="list-disc ml-6 mb-4">
-            <li>Modern Frontend Patterns</li>
-            <li>Backend Scalability & Microservices</li>
-            <li>Technical Leadership Skills</li>
-            <li>Performance Tuning & Security</li>
-        </ul>
-    `,
-    instructor_id: "Instructor Master",
-    preview_video_link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    price: 499000,
-    videos: [
-        {
-            id: "1",
-            title: "01. Introduction to Senior Mindset",
-            link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            duration: 450,
-            order: 1,
-        },
-        {
-            id: "2",
-            title: "02. Understanding Scalable Architecture",
-            link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            duration: 1200,
-            order: 2,
-        },
-        {
-            id: "3",
-            title: "03. Advanced State Management Patterns",
-            link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            duration: 1800,
-            order: 3,
-        },
-        {
-            id: "4",
-            title: "04. CI/CD Pipeline Mastery",
-            link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            duration: 900,
-            order: 4,
-        },
-    ],
-};
 
 export default function CourseDetailPage(): React.JSX.Element {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [course, setCourse] = useState<CourseIncludeVideo | null>(null);
+    const [course, setCourse] = useState<CourseIncludeVideo>({
+        id: '',
+        description: '',
+        instructor_id: '',
+        preview_video_link: '',
+        price: 0,
+        title: '',
+        videos: []
+    });
     const { id } = useParams<{ id: string }>();
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+    const [paymentMethod, setPaymentMethod] = useState<string>("");
+    const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
 
     useEffect(() => {
         (async () => {
@@ -76,13 +40,41 @@ export default function CourseDetailPage(): React.JSX.Element {
                 }
             } catch (error) {
                 console.error(error);
-                // Fallback to mock for demo purposes if API fails
-                setCourse(mockCourse);
+                setError('Gagal Fetch Course');
             } finally {
                 setLoading(false);
             }
         })();
     }, [id]);
+
+    const handleEnroll = useCallback(async (paymentMethod: string) => {
+        try {
+            setLoading(true);
+            setError("");
+            const response = await fetch(`/api/courses/${id}/enroll`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    paymentMethod,
+                }),
+            });
+
+            if (response.ok) {
+                setIsEnrolled(true);
+            } else {
+                const { error } = await response.json() as ResponseWithError;
+                setError(error);
+            }
+        } catch (error) {
+            console.error(error);
+            setError('Failed to enroll in course');
+        } finally {
+            setLoading(false);
+            setIsPaymentModalOpen(false);
+        }
+    }, []);
 
     const formatDuration = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -90,17 +82,10 @@ export default function CourseDetailPage(): React.JSX.Element {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const getYoutubeEmbedUrl = (url: string) => {
-        if (!url) return "";
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-        return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : url;
-    };
-
     if (loading) return <LoadingOverlay />;
     if (!course && !loading) return <ErrorBanner error={error || "Course not found"} setError={setError} />;
 
-    const currentCourse = course || mockCourse;
+    const currentCourse = course;
     const formattedPrice = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -111,12 +96,96 @@ export default function CourseDetailPage(): React.JSX.Element {
         <div className="min-h-screen bg-[#FFFBE9] pt-20 pb-20">
             {error && <ErrorBanner error={error} setError={setError} />}
 
+            {/* Modal Pemilihan Pembayaran */}
+            {isPaymentModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1E293B]/60 backdrop-blur-md animate-in fade-in duration-500 p-4">
+                    <div className="bg-white rounded-3xl p-8 md:p-12 max-w-lg w-full shadow-2xl transform transition-all animate-in zoom-in-95 duration-300 border-4 border-[#FFFBE9]">
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl font-black font-outfit text-[#1E293B] mb-2">Pilih Pembayaran</h2>
+                            <p className="font-jakarta text-[#AD8B73]">Silakan pilih metode yang paling nyaman untuk Anda.</p>
+                        </div>
+
+                        <div className="space-y-4">
+                            {[
+                                { id: 'CREDIT_CARD', label: 'Kartu Kredit', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
+                                { id: 'DEBIT_CARD', label: 'Kartu Debit', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
+                                { id: 'E_WALLET', label: 'E-Wallet', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z' },
+                            ].map((method) => (
+                                <button 
+                                    key={method.id}
+                                    onClick={() => setPaymentMethod(method.id)}
+                                    className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all duration-300 group ${
+                                        paymentMethod === method.id 
+                                            ? 'border-[#AD8B73] bg-[#FFFBE9] shadow-inner' 
+                                            : 'border-[#E3CAA5]/30 bg-white hover:border-[#AD8B73]/50'
+                                    }`}
+                                >
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
+                                        paymentMethod === method.id ? 'bg-[#AD8B73] text-white' : 'bg-[#FFFBE9] text-[#AD8B73]'
+                                    }`}>
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={method.icon} />
+                                        </svg>
+                                    </div>
+                                    <span className={`text-lg font-bold font-jakarta transition-colors ${
+                                        paymentMethod === method.id ? 'text-[#1E293B]' : 'text-[#8b6b55]'
+                                    }`}>
+                                        {method.label}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mt-10">
+                            <button 
+                                onClick={() => setIsPaymentModalOpen(false)}
+                                className="py-4 rounded-2xl font-bold font-jakarta text-[#AD8B73] border-2 border-[#AD8B73] hover:bg-[#FFFBE9] transition-all"
+                            >
+                                Batal
+                            </button>
+                            <button 
+                                onClick={() => handleEnroll(paymentMethod)}
+                                disabled={!paymentMethod || loading}
+                                className="py-4 rounded-2xl font-bold font-jakarta bg-[#1E293B] text-[#FFFBE9] hover:bg-[#AD8B73] hover:-translate-y-1 shadow-lg shadow-[#1E293B]/20 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                            >
+                                {loading ? 'Memproses...' : 'Bayar Sekarang'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Sukses Enrollment Overlay */}
+            {isEnrolled && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#1E293B]/80 backdrop-blur-lg animate-in fade-in duration-500 p-4">
+                    <div className="bg-white rounded-[2.5rem] p-12 max-w-md w-full shadow-2xl text-center transform transition-all animate-in zoom-in-95 duration-500 border-8 border-[#FFFBE9]">
+                        <div className="w-28 h-28 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-green-500/30 animate-bounce">
+                            <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        
+                        <h2 className="text-4xl font-black font-outfit text-[#1E293B] mb-4">Enrollment Berhasil!</h2>
+                        <p className="font-jakarta text-[#8b6b55] text-lg mb-10 leading-relaxed">
+                            Selamat! Anda telah terdaftar di kursus ini. Silakan cek daftar kursus Anda untuk mulai belajar.
+                        </p>
+                        
+                        <Link 
+                            to="/learner/enrollment"
+                            className="inline-block w-full py-5 bg-[#AD8B73] text-[#FFFBE9] rounded-2xl font-bold text-xl shadow-xl hover:bg-[#1E293B] hover:-translate-y-1 transition-all duration-300"
+                        >
+                            Lihat Kursus Saya
+                        </Link>
+                    </div>
+                </div>
+            )}
+
             {/* Hero Section */}
             <section className="bg-[#1E293B] text-[#FFFBE9] py-16 px-6 lg:px-12 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
                     <div className="lg:col-span-2 space-y-6">
                         <div className="flex items-center gap-2 text-[#E3CAA5] font-bold text-sm tracking-widest uppercase animate-in fade-in slide-in-from-left-4 duration-500">
-                            <span className="bg-[#E3CAA5]/20 px-2 py-1 rounded">Web Development</span>
+                            {/* <span className="bg-[#E3CAA5]/20 px-2 py-1 rounded">Web Development</span> */}
                             <span>•</span>
                             <span>Updated April 2026</span>
                         </div>
@@ -133,7 +202,7 @@ export default function CourseDetailPage(): React.JSX.Element {
                             <div className="flex items-center gap-2">
                                 <span className="text-[#E3CAA5] font-bold underline cursor-pointer">{currentCourse.instructor_id}</span>
                             </div>
-                            <div className="flex items-center gap-2">
+                            {/* <div className="flex items-center gap-2">
                                 <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
@@ -142,7 +211,7 @@ export default function CourseDetailPage(): React.JSX.Element {
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">12,345 students</span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -167,7 +236,7 @@ export default function CourseDetailPage(): React.JSX.Element {
                     <div className="space-y-6">
                         <h2 className="text-3xl font-black font-outfit text-[#1E293B]">Kurikulum Kursus</h2>
                         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-[#E3CAA5]/30">
-                            {currentCourse.videos.sort((a, b) => a.order - b.order).map((video, index) => (
+                            {currentCourse.videos?.sort((a, b) => a.order - b.order).map((video, index) => (
                                 <div 
                                     key={video.id}
                                     className={`flex items-center justify-between p-5 hover:bg-[#FFFBE9]/50 transition-colors cursor-pointer group ${
@@ -215,16 +284,14 @@ export default function CourseDetailPage(): React.JSX.Element {
                             <div className="p-8 space-y-6">
                                 <div className="flex items-center gap-4">
                                     <span className="text-4xl font-black font-outfit text-[#1E293B]">{formattedPrice}</span>
-                                    <span className="text-[#AD8B73] line-through font-bold text-lg">Rp 1.299.000</span>
-                                    <span className="bg-green-100 text-green-700 font-bold text-xs px-2 py-1 rounded">60% OFF</span>
                                 </div>
 
-                                <Link 
-                                    to={`/course/${currentCourse.id}/enroll`}
+                                <button 
+                                    onClick={() => setIsPaymentModalOpen(true)}
                                     className="block w-full py-4 bg-[#AD8B73] text-[#FFFBE9] text-center rounded-2xl font-bold text-xl shadow-lg shadow-[#AD8B73]/30 hover:bg-[#1E293B] hover:-translate-y-1 transition-all duration-300"
                                 >
                                     Enroll Now
-                                </Link>
+                                </button>
 
                                 <div className="space-y-4 pt-4 text-sm font-medium text-[#1E293B]/70">
                                     <div className="flex items-center gap-3">

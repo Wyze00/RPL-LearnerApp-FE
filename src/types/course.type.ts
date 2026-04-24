@@ -12,3 +12,7 @@ export interface Course {
 export interface CourseIncludeVideo extends Course {
     videos: Video[];
 }
+
+export interface EnrollCourse {
+    paymentMethod: string;
+}

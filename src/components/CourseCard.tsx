@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { type Course } from "../types/course.type";
+import { getYoutubeThumbnailUrl } from "../utils/getYoutbeThumbnailUrl";
 
 interface CourseCardProps {
     course: Course;
@@ -21,7 +22,7 @@ export default function CourseCard({ course }: CourseCardProps): React.JSX.Eleme
             {/* Thumbnail */}
             <div className="relative aspect-video overflow-hidden">
                 <img 
-                    src="/course_placeholder.png" // Placeholder
+                    src={getYoutubeThumbnailUrl(course.preview_video_link)} // Placeholder
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

@@ -1,12 +1,12 @@
 import { Navigate, Outlet } from 'react-router';
 import { useAppSelector } from '../hooks/useAppSelector';
 
-export default function PublicRoute(): React.JSX.Element {
+export default function LoginMidleware(): React.JSX.Element {
     const user  = useAppSelector((state) => state.user);
 
-    if (user.username) {
+    if (!user.username) {
         return (
-            <Navigate to={`/learner/enrollment`}/>
+            <Navigate to={`/login`}/>
         );
     }
 
