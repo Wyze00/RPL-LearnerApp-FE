@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { type ForgotPasswordRequest, type RegisterRequest } from "../../types/auth.type";
+import { type ForgotPasswordRequest } from "../../types/auth.type";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import ErrorBanner from "../../components/ErrorBanner";
 import type { ResponseWithError } from "../../types/response.type";
