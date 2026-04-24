@@ -1,11 +1,12 @@
 import { Navigate, Outlet } from 'react-router';
 import { useAppSelector } from '../hooks/useAppSelector';
 
-export default function PublicRoute(): React.JSX.Element {
+export default function AdminMiddleware(): React.JSX.Element {
     const user  = useAppSelector((state) => state.user);
-    if (user.username) {
+    console.log(user);
+    if (!user.username || !user.roles.includes("admin")) {
         return (
-            <Navigate to={`/learner/enrollment`}/>
+            <Navigate to={`/`}/>
         );
     }
 

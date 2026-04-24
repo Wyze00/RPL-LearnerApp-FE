@@ -4,6 +4,7 @@ import type { MeResponse } from "../types/auth.type";
 import { userSlice } from "../redux/user.slice";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { useNavigate, useLocation, Link } from "react-router";
+import type { ResponseWithData } from "../types/response.type";
 
 export default function Header({ children }: PropsWithChildren): React.JSX.Element {
     const dispatch = useAppDispatch();
@@ -75,7 +76,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                 const response = await fetch('/api/auth/me');
 
                 if (response.ok) {
-                    const data = await response.json() as MeResponse;
+                    const { data } = await response.json() as ResponseWithData<MeResponse>;
                     dispatch(userSlice.actions.setState(data));
                 }
 
@@ -92,7 +93,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && search.trim() !== "") {
-            navigate(`/courses?search=${encodeURIComponent(search.trim())}`);
+            navigate(`/course?search=${encodeURIComponent(search.trim())}`);
         }
     }
 
@@ -126,10 +127,12 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                 {/* Main Nav and Auth */}
                 <div className="flex items-center gap-8">
                     <nav className="flex items-center gap-6 font-medium text-[#AD8B73] font-jakarta">
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 1</a>
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 2</a>
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 3</a>
-                        <a href="#" className="hover:text-[#CEAB93] transition-colors">Link 4</a>
+                        <Link to="/course" className="hover:text-[#CEAB93] transition-colors">Course</Link>
+                        <Link to="/learner/enrollment" className="hover:text-[#CEAB93] transition-colors">Enrollment</Link>
+                        <Link to="/instructor" className="hover:text-[#CEAB93] transition-colors">Instructor</Link>
+                        {user && user.roles.includes('admin') && (
+                            <Link to="/admin" className="hover:text-[#CEAB93] transition-colors">Admin</Link>
+                        )}
                     </nav>
 
                     <div className="ml-4">

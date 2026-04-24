@@ -23,3 +23,13 @@ export interface ForgotPasswordVerifyRequest {
     token: string;
     password: string;
 }
+
+export interface User {
+    id: string,
+    username: string,
+    name: string,
+    description: string,
+    createdAt: string,
+    deletedAt: string,
+    email: string,
+}
