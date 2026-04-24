@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ErrorBanner from "../../components/ErrorBanner";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import type { ResponseWithData, ResponseWithError } from "../../types/response.type";
+import type { ResponseWithData } from "../../types/response.type";
 import type { CoursePaymentHistory } from "../../types/course.type";
 import { type User } from "../../types/auth.type";
 

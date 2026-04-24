@@ -28,3 +28,4 @@ prompts/
 references/
 
 api.md
+.env
