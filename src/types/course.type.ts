@@ -23,10 +23,9 @@ export interface CourseIncludeCount extends Course {
 
 export interface CoursePaymentHistory {
     id              : string;
-    course_id       : string;
-    learner_id      : string;
     createdAt       : string;
     payment_method  : string;
+    payment_mode  : string;
     amount          : number;
     status          : string;
 }

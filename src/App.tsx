@@ -22,6 +22,7 @@ const InstructorPage = lazy(() => import('./pages/instructors/InstructorPage'));
 const InstructorCoursePage = lazy(() => import('./pages/instructors/InstructorCoursePage'));
 const InstructorCourseVideoPage = lazy(() => import('./pages/instructors/InstructorCourseVideoPage'));
 const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
+const WalletPage = lazy(() => import('./pages/wallet/WalletPage'));
 
 export default function App(): React.JSX.Element {
     return (
@@ -42,6 +43,7 @@ export default function App(): React.JSX.Element {
                 <Route path="/instructor" element={<InstructorPage />} />
                 <Route path="/instructor/course/:courseId" element={<InstructorCoursePage />} />
                 <Route path="/instructor/course/:courseId/video/:videoId" element={<InstructorCourseVideoPage />} />
+                <Route path="/wallet" element={<WalletPage />} />
               </Route>
               <Route element={<AdminMiddleware />}>
                 <Route path="/admin" element={<AdminPage />} />

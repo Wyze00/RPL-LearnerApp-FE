@@ -130,6 +130,7 @@ export default function Header({ children }: PropsWithChildren): React.JSX.Eleme
                         <Link to="/course" className="hover:text-[#CEAB93] transition-colors">Course</Link>
                         <Link to="/learner/enrollment" className="hover:text-[#CEAB93] transition-colors">Enrollment</Link>
                         <Link to="/instructor" className="hover:text-[#CEAB93] transition-colors">Instructor</Link>
+                        <Link to="/wallet" className="hover:text-[#CEAB93] transition-colors">Wallet</Link>
                         {user && user.roles.includes('admin') && (
                             <Link to="/admin" className="hover:text-[#CEAB93] transition-colors">Admin</Link>
                         )}
