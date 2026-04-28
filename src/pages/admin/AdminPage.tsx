@@ -150,7 +150,6 @@ export default function AdminPage(): React.JSX.Element {
                                         <tr key={item.id} className="hover:bg-[#FFFBE9]/30 transition-colors group">
                                             <td className="px-6 py-5">
                                                 <div className="font-mono text-[10px] text-[#CEAB93] truncate max-w-[120px]">{item.id}</div>
-                                                <div className="text-xs font-bold text-[#1E293B]">Course ID: {item.course_id.split('-')[0]}...</div>
                                             </td>
                                             <td className="px-6 py-5">
                                                 <span className="px-3 py-1 bg-[#E3CAA5]/20 text-[#AD8B73] rounded-lg text-[10px] font-black uppercase">

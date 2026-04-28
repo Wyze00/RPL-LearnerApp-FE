@@ -20,8 +20,7 @@ export default function CourseDetailPage(): React.JSX.Element {
         videos: []
     });
     const { id } = useParams<{ id: string }>();
-    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
-    const [paymentMethod, setPaymentMethod] = useState<string>("");
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
     const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
 
     useEffect(() => {
@@ -47,18 +46,13 @@ export default function CourseDetailPage(): React.JSX.Element {
         })();
     }, [id]);
 
-    const handleEnroll = useCallback(async (paymentMethod: string) => {
+    const handleEnroll = useCallback(async () => {
         try {
             setLoading(true);
             setError("");
             const response = await fetch(`/api/courses/${id}/enroll`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    paymentMethod,
-                }),
+                credentials: "include",
             });
 
             if (response.ok) {
@@ -72,9 +66,9 @@ export default function CourseDetailPage(): React.JSX.Element {
             setError('Failed to enroll in course');
         } finally {
             setLoading(false);
-            setIsPaymentModalOpen(false);
+            setIsConfirmationModalOpen(false);
         }
-    }, []);
+    }, [id]);
 
     const formatDuration = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -96,59 +90,28 @@ export default function CourseDetailPage(): React.JSX.Element {
         <div className="min-h-screen bg-[#FFFBE9] pt-20 pb-20">
             {error && <ErrorBanner error={error} setError={setError} />}
 
-            {/* Modal Pemilihan Pembayaran */}
-            {isPaymentModalOpen && (
+            {/* Modal Konfirmasi Enrollment */}
+            {isConfirmationModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1E293B]/60 backdrop-blur-md animate-in fade-in duration-500 p-4">
                     <div className="bg-white rounded-3xl p-8 md:p-12 max-w-lg w-full shadow-2xl transform transition-all animate-in zoom-in-95 duration-300 border-4 border-[#FFFBE9]">
                         <div className="text-center mb-8">
-                            <h2 className="text-3xl font-black font-outfit text-[#1E293B] mb-2">Pilih Pembayaran</h2>
-                            <p className="font-jakarta text-[#AD8B73]">Silakan pilih metode yang paling nyaman untuk Anda.</p>
-                        </div>
-
-                        <div className="space-y-4">
-                            {[
-                                { id: 'CREDIT_CARD', label: 'Kartu Kredit', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
-                                { id: 'DEBIT_CARD', label: 'Kartu Debit', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
-                                { id: 'E_WALLET', label: 'E-Wallet', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z' },
-                            ].map((method) => (
-                                <button 
-                                    key={method.id}
-                                    onClick={() => setPaymentMethod(method.id)}
-                                    className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all duration-300 group ${
-                                        paymentMethod === method.id 
-                                            ? 'border-[#AD8B73] bg-[#FFFBE9] shadow-inner' 
-                                            : 'border-[#E3CAA5]/30 bg-white hover:border-[#AD8B73]/50'
-                                    }`}
-                                >
-                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                                        paymentMethod === method.id ? 'bg-[#AD8B73] text-white' : 'bg-[#FFFBE9] text-[#AD8B73]'
-                                    }`}>
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={method.icon} />
-                                        </svg>
-                                    </div>
-                                    <span className={`text-lg font-bold font-jakarta transition-colors ${
-                                        paymentMethod === method.id ? 'text-[#1E293B]' : 'text-[#8b6b55]'
-                                    }`}>
-                                        {method.label}
-                                    </span>
-                                </button>
-                            ))}
+                            <h2 className="text-3xl font-black font-outfit text-[#1E293B] mb-2">Konfirmasi Enrollment</h2>
+                            <p className="font-jakarta text-[#AD8B73]">Apakah Anda yakin ingin mendaftar ke kursus ini?</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 mt-10">
                             <button 
-                                onClick={() => setIsPaymentModalOpen(false)}
+                                onClick={() => setIsConfirmationModalOpen(false)}
                                 className="py-4 rounded-2xl font-bold font-jakarta text-[#AD8B73] border-2 border-[#AD8B73] hover:bg-[#FFFBE9] transition-all"
                             >
                                 Batal
                             </button>
                             <button 
-                                onClick={() => handleEnroll(paymentMethod)}
-                                disabled={!paymentMethod || loading}
+                                onClick={() => handleEnroll()}
+                                disabled={loading}
                                 className="py-4 rounded-2xl font-bold font-jakarta bg-[#1E293B] text-[#FFFBE9] hover:bg-[#AD8B73] hover:-translate-y-1 shadow-lg shadow-[#1E293B]/20 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
                             >
-                                {loading ? 'Memproses...' : 'Bayar Sekarang'}
+                                {loading ? 'Memproses...' : 'Ya, Daftar'}
                             </button>
                         </div>
                     </div>
@@ -287,7 +250,7 @@ export default function CourseDetailPage(): React.JSX.Element {
                                 </div>
 
                                 <button 
-                                    onClick={() => setIsPaymentModalOpen(true)}
+                                    onClick={() => setIsConfirmationModalOpen(true)}
                                     className="block w-full py-4 bg-[#AD8B73] text-[#FFFBE9] text-center rounded-2xl font-bold text-xl shadow-lg shadow-[#AD8B73]/30 hover:bg-[#1E293B] hover:-translate-y-1 transition-all duration-300"
                                 >
                                     Enroll Now
