@@ -4,12 +4,15 @@ import LoadingOverlay from "../../components/LoadingOverlay";
 import { useParams, Link } from "react-router";
 import type { ResponseWithData, ResponseWithError } from "../../types/response.type";
 import type { EnrollmentWithVideo } from "../../types/enrollment.type";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 export default function EnrollmentDetailPage(): React.JSX.Element {
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
     const { enrollmentId } = useParams();
     const [enrollment, setEnrollment] = useState<EnrollmentWithVideo | null>(null);
+    const [showCertificateModal, setShowCertificateModal] = useState<boolean>(false);
+    const user = useAppSelector((state) => state.user);
 
     useEffect(() => {
         setLoading(true);
@@ -77,9 +80,21 @@ export default function EnrollmentDetailPage(): React.JSX.Element {
                                     style={{ width: `${enrollment.progress}%` }}
                                 ></div>
                             </div>
-                            <p className="text-xs font-jakarta text-[#CEAB93] text-right font-medium italic">
-                                Selesaikan semua video untuk mendapatkan sertifikat!
-                            </p>
+                            {enrollment.progress >= 100 ? (
+                                <button 
+                                    onClick={() => setShowCertificateModal(true)}
+                                    className="w-full py-3 bg-gradient-to-r from-[#AD8B73] to-[#CEAB93] hover:from-[#8b6b55] hover:to-[#AD8B73] text-[#FFFBE9] font-bold rounded-2xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 font-jakarta text-sm mt-2"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Cetak Sertifikat
+                                </button>
+                            ) : (
+                                <p className="text-xs font-jakarta text-[#CEAB93] text-right font-medium italic">
+                                    Selesaikan semua video untuk mendapatkan sertifikat!
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -171,6 +186,111 @@ export default function EnrollmentDetailPage(): React.JSX.Element {
                         </div>
                     </div>
                 </div>
+                {/* Certificate Modal */}
+                {showCertificateModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1E293B]/80 backdrop-blur-sm animate-in fade-in duration-300">
+                        <div className="absolute inset-0" onClick={() => setShowCertificateModal(false)}></div>
+                        
+                        <style dangerouslySetInnerHTML={{ __html: `
+                            @media print {
+                                body * {
+                                    visibility: hidden !important;
+                                }
+                                #certificate-print, #certificate-print * {
+                                    visibility: visible !important;
+                                }
+                                #certificate-print {
+                                    position: fixed !important;
+                                    left: 50% !important;
+                                    top: 50% !important;
+                                    transform: translate(-50%, -50%) scale(0.9) !important;
+                                    width: 100vw !important;
+                                    max-width: 100vw !important;
+                                    height: auto !important;
+                                    border: none !important;
+                                    background-color: white !important;
+                                    box-shadow: none !important;
+                                    padding: 20px !important;
+                                    margin: 0 !important;
+                                }
+                                .print-hide {
+                                    display: none !important;
+                                }
+                            }
+                        ` }} />
+
+                        <div id="certificate-print" className="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl p-8 md:p-12 border-4 border-[#E3CAA5] animate-in zoom-in-95 duration-300 print:border-0">
+                            {/* Close Button */}
+                            <button 
+                                onClick={() => setShowCertificateModal(false)}
+                                className="absolute top-4 right-4 text-[#AD8B73] hover:text-[#1E293B] transition-colors print-hide"
+                            >
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+
+                            {/* Certificate Design */}
+                            <div className="border-8 border-double border-[#AD8B73] p-6 md:p-10 relative bg-[#FFFBE9]/50 rounded-xl flex flex-col items-center justify-center text-center min-h-[450px] md:min-h-[550px]">
+                                {/* Background decorative elements */}
+                                <div className="absolute top-4 left-4 w-16 h-16 border-t-4 border-l-4 border-[#AD8B73]"></div>
+                                <div className="absolute top-4 right-4 w-16 h-16 border-t-4 border-r-4 border-[#AD8B73]"></div>
+                                <div className="absolute bottom-4 left-4 w-16 h-16 border-b-4 border-l-4 border-[#AD8B73]"></div>
+                                <div className="absolute bottom-4 right-4 w-16 h-16 border-b-4 border-r-4 border-[#AD8B73]"></div>
+
+                                <span className="text-[#AD8B73] font-outfit tracking-widest font-black text-base mb-4 uppercase">E-LEARNING PLATFORM</span>
+                                
+                                <h2 className="text-4xl md:text-6xl font-extrabold font-outfit text-[#1E293B] mb-2 tracking-wide">CERTIFICATE</h2>
+                                <p className="text-[#AD8B73] font-outfit tracking-[0.2em] text-xs md:text-sm uppercase mb-8 md:mb-12 font-bold">OF COMPLETION</p>
+
+                                <p className="font-jakarta text-[#8b6b55] italic text-sm mb-3">Dengan ini menyatakan bahwa</p>
+                                
+                                <h3 className="text-3xl md:text-5xl font-black font-jakarta text-[#1E293B] mb-3 border-b-2 border-[#E3CAA5] pb-2 px-8 min-w-[250px] tracking-wide">
+                                    {user?.username || 'Learner'}
+                                </h3>
+
+                                <p className="font-jakarta text-[#8b6b55] italic text-sm mb-6">telah berhasil menyelesaikan kelas online</p>
+
+                                <h4 className="text-2xl md:text-3xl font-extrabold font-outfit text-[#AD8B73] max-w-2xl mb-10 md:mb-16 leading-tight">
+                                    {enrollment.course.title}
+                                </h4>
+
+                                <div className="flex flex-row justify-between items-end w-full px-8 md:px-16 mt-auto pt-6">
+                                    <div className="text-center">
+                                        <div className="border-b border-[#AD8B73] w-32 md:w-40 mb-2"></div>
+                                        <p className="text-[10px] md:text-xs font-bold text-[#8b6b55] font-jakarta">Instructor ID: {enrollment.course.instructor_id}</p>
+                                    </div>
+
+                                    {/* Seal */}
+                                    <div className="w-20 h-20 md:w-28 md:h-28 bg-gradient-to-br from-[#AD8B73] to-[#CEAB93] rounded-full flex items-center justify-center shadow-lg border-4 border-white relative flex-shrink-0">
+                                        <div className="absolute inset-1 border border-white/50 rounded-full"></div>
+                                        <svg className="w-10 h-10 md:w-14 md:h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                    </div>
+
+                                    <div className="text-center">
+                                        <div className="border-b border-[#AD8B73] w-32 md:w-40 mb-2"></div>
+                                        <p className="text-[10px] md:text-xs font-bold text-[#8b6b55] font-jakarta">Tanggal: {new Date().toLocaleDateString('id-ID')}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Print Button */}
+                            <div className="flex justify-center gap-4 mt-6 print-hide">
+                                <button 
+                                    onClick={() => window.print()}
+                                    className="px-6 py-3 bg-[#1E293B] hover:bg-[#0F172A] text-[#FFFBE9] font-bold rounded-2xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 font-jakarta"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2z" />
+                                    </svg>
+                                    Cetak / Unduh Sertifikat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
